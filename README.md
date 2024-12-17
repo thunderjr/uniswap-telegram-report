@@ -29,6 +29,9 @@ INTERVAL=1h
 
 # Chain ID of the blockchain (e.g., 137 for Polygon)
 CHAIN_ID=137
+
+# Redis URL for caching (leave empty to use localhost by default)
+REDIS_URL=
 ```
 
 ## Example Message 📝
