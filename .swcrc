@@ -1,0 +1,21 @@
+{
+    "$schema": "https://json.schemastore.org/swcrc",
+    "jsc": {
+        "parser": {
+            "syntax": "typescript",   // Parse TypeScript syntax
+            "decorators": false,      // Enable this if you're using decorators
+            "tsx": false,             // Set to true if you're using React
+        },
+        "target": "es2023",         // Output JavaScript target
+        "loose": false,             // Ensure clean, strict code generation
+        "minify": {
+            "compress": false,        // Disable aggressive compression (keeps readability)
+            "mangle": false           // Avoid mangling variable names
+        }
+    },
+    "module": {
+        "type": "commonjs",         // Output format (e.g., CommonJS for Node.js)
+        "strict": true,              // Keep strict mode
+        "strictMode": true          // Keep strict mode
+    }
+}

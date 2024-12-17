@@ -1,0 +1,25 @@
+{
+  "name": "uniswap-telegram-report",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "swc ./src -d ./dist",
+    "start": "node dist/src/index.js"
+  },
+  "author": "thunderjr",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "date-fns": "^4.1.0",
+    "dotenv": "^16.4.7",
+    "node-telegram-bot-api": "^0.66.0",
+    "redis": "^4.7.0"
+  },
+  "devDependencies": {
+    "@swc/cli": "^0.5.2",
+    "@swc/core": "^1.10.1",
+    "@types/node": "^22.10.2",
+    "@types/node-telegram-bot-api": "^0.64.7",
+    "eslint": "^9.17.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
