@@ -4,11 +4,15 @@ import TelegramBot from "node-telegram-bot-api";
 import { createClient } from "redis";
 
 import { getPositionCache, setPositionCache } from "./redis";
-import { getPosition, parsePositionData } from "./uniswap";
 import { positionMessage } from "./message";
+import {
+  type Position,
+  getPosition,
+  listPositions,
+  parsePositionData,
+} from "./uniswap";
 
 const requiredValues = {
-  POSITION_IDS: process.env.POSITION_IDS?.split(",") || [],
   TELEGRAM_CHAT_ID: process.env.TELEGRAM_CHAT_ID || "",
   TELEGRAM_TOKEN: process.env.TELEGRAM_TOKEN || "",
   OWNER_WALLET: process.env.OWNER_WALLET || "",
@@ -26,14 +30,8 @@ async function main() {
       `Missing required env values: ${missingValueKeys.join(", ")}`,
     );
 
-  const {
-    CHAIN_ID,
-    INTERVAL,
-    OWNER_WALLET,
-    POSITION_IDS,
-    TELEGRAM_TOKEN,
-    TELEGRAM_CHAT_ID,
-  } = requiredValues;
+  const { CHAIN_ID, INTERVAL, OWNER_WALLET, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID } =
+    requiredValues;
 
   const redisClient = createClient({ url: process.env.REDIS_URL });
   redisClient.on("error", (err) => console.error("[Redis Error]", err));
@@ -41,15 +39,29 @@ async function main() {
 
   const telegramBot = new TelegramBot(TELEGRAM_TOKEN);
 
-  for (const positionId of POSITION_IDS) {
-    const data = await getPosition({
-      protocolVersion: "PROTOCOL_VERSION_V3",
-      chainId: Number(CHAIN_ID),
-      owner: OWNER_WALLET,
-      tokenId: positionId,
-    }).then(parsePositionData);
+  let positions: Position[];
 
-    const cacheKey = `uniswap-position-${positionId}-${INTERVAL}`;
+  if (process.env.POSITION_IDS) {
+    positions = await Promise.all(
+      process.env.POSITION_IDS.split(",").map((id) =>
+        getPosition({
+          chainId: Number(CHAIN_ID),
+          owner: OWNER_WALLET,
+          tokenId: id,
+        }),
+      ),
+    );
+  } else {
+    positions = await listPositions({
+      chainIds: [Number(CHAIN_ID)],
+      owner: OWNER_WALLET,
+    });
+  }
+
+  for (const position of positions) {
+    const data = parsePositionData(position);
+
+    const cacheKey = `uniswap-position-${position.v3Position.tokenId}-${INTERVAL}`;
     const lastData = await getPositionCache(redisClient, cacheKey);
     const message = positionMessage({ lastData, data });
 

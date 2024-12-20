@@ -2,12 +2,11 @@ import axios from "axios";
 
 interface GetPositionRequest {
   chainId: number;
-  protocolVersion: string;
   tokenId: string;
   owner: string;
 }
 
-interface Position {
+export interface Position {
   chainId: number;
   protocolVersion: string;
   v3Position: V3Position;
@@ -44,12 +43,45 @@ interface Token {
   name: string;
 }
 
+interface ListPositionsRequest {
+  chainIds: number[];
+  owner: string;
+}
+
+export const listPositions = async ({
+  owner,
+  chainIds,
+}: ListPositionsRequest) => {
+  const response = await axios.post<{ positions: Position[] }>(
+    "https://interface.gateway.uniswap.org/v2/pools.v1.PoolsService/ListPositions",
+    {
+      protocolVersions: ["PROTOCOL_VERSION_V3"],
+      positionStatuses: [
+        "POSITION_STATUS_OUT_OF_RANGE",
+        "POSITION_STATUS_IN_RANGE",
+      ],
+      address: owner,
+      pageSize: process.env.LIST_POSITIONS_PAGE_SIZE || 25,
+      chainIds,
+    },
+    {
+      headers: {
+        origin: "https://app.uniswap.org",
+        "content-type": "application/json",
+        "cache-control": "no-cache",
+      },
+    },
+  );
+
+  return response.data.positions;
+};
+
 export const getPosition = async (
-  request: GetPositionRequest,
+  req: GetPositionRequest,
 ): Promise<Position> => {
   const response = await axios.post<{ position: Position }>(
     "https://interface.gateway.uniswap.org/v2/pools.v1.PoolsService/GetPosition",
-    request,
+    { ...req, protocolVersion: "PROTOCOL_VERSION_V3" },
     {
       headers: {
         origin: "https://app.uniswap.org",
