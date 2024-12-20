@@ -33,7 +33,7 @@ export const positionMessage = ({ data, lastData }: PositionMessageParams) => {
 
   return (
     `📊 *${data.poolSymbol}* Uniswap Position Report\n` +
-    `Range: 🔼 ${data.rangeUpper.toFixed(6)} 🔽 ${data.rangeLower.toFixed(6)}\n${rangeWarningMessage}\n` +
+    `Range: 🔽 ${data.rangeLower.toFixed(6)} 🔼 ${data.rangeUpper.toFixed(6)}\n${rangeWarningMessage}\n` +
     "💰 *Total Unclaimed*\n" +
     `${data.totalUnclaimed.toFixed(6)} ${data.totalSymbol} ${changeText(unclaimedChange, interval)}\n\n` +
     "📦 *Total Amount*\n" +
