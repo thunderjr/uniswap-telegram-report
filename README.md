@@ -12,50 +12,54 @@ cp .env.example .env
 And fill in the following details:
 
 ```dotenv
-# List of Uniswap position IDs to monitor (comma-separated)
+# Optional - List of Uniswap position IDs to monitor (comma-separated)
+# If not specified, it will list all positions (see LIST_POSITIONS_PAGE_SIZE)
 POSITION_IDS=9876543,1234567
 
 # Your Telegram chat ID to receive notifications
-TELEGRAM_CHAT_ID=YOUR_CHAT_ID
+TELEGRAM_CHAT_ID=42069
 
 # Telegram bot token obtained from BotFather
 TELEGRAM_TOKEN=YOUR_BOT_TOKEN
 
 # Owner wallet address
-OWNER_WALLET=0xYourWalletAddress
-
-# Optional - Range warning threshold (in percentage) [Default: 7.5%]
-RANGE_WARNING_THRESHOLD
-
-# Cache interval key (for multiple interval support)
-INTERVAL=1h
+OWNER_WALLET=0xdeadbeef
 
 # Chain ID of the blockchain (e.g., 137 for Polygon)
 CHAIN_ID=137
 
-# Redis URL for caching (leave empty to use localhost by default)
+# Range warning threshold (in percentage) [Default: 7.5%]
+RANGE_WARNING_THRESHOLD=7.5
+
+# Cache interval key (for multiple interval cache support)
+INTERVAL=1h
+
+# Optional - List positions request page size [Default: 25]
+LIST_POSITIONS_PAGE_SIZE=25
+
+# Optional - Redis URL for caching (leave empty to use localhost by default)
 REDIS_URL=
 ```
 
 ## Example Message 📝
 
-A sample message sent by the bot:
-
 ```
-📊 WMATIC/USDT Uniswap Position Report
+📊 *WETH/USDT* Uniswap Position Report
+Range: 🔼 3000 🔽 4000
+⚠️ Warning: Price is close to the upper range! (60.784620 >= 60.800000)
 
-💰 Total Unclaimed
-117.267819 WMATIC (+0.25% in 1 hour)
+💰 *Total Unclaimed*
+1.267819 WETH +0.25% (1h)
 
-📦 Total Amount
-166.082057 WMATIC (+0.12% in 1 hour)
+📦 *Total Amount*
+166.082057 WETH +0.12% (1h)
 
-💹 Current Price
-0.042069 USDT (+0.32% in 1 hour)
+💹 *Current Price*
+3420 USDT +0.32% (1h)
 
-🚀 APR: 7.8632% (+0.10% in 1 hour)
+🚀 *APR:* 10.8632% +0.10% (1h)
 
-⏰ Last Updated: 2024-08-12 12:00:00
+⏰ *Last Updated:* 2024-08-12 12:00:00
 ```
 
 ## Support & Feedback 🤝
