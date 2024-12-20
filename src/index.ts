@@ -17,8 +17,14 @@ const requiredValues = {
 };
 
 async function main() {
-  const missingValueKeys = Object.entries(requiredValues).filter(([_, value]) => !value?.length).map(([key]) => key);
-  if (missingValueKeys.length > 0) throw new Error(`Missing required env values: ${missingValueKeys.join(", ")}`);
+  const missingValueKeys = Object.entries(requiredValues)
+    .filter(([_, value]) => !value?.length)
+    .map(([key]) => key);
+
+  if (missingValueKeys.length > 0)
+    throw new Error(
+      `Missing required env values: ${missingValueKeys.join(", ")}`,
+    );
 
   const {
     CHAIN_ID,
@@ -30,14 +36,14 @@ async function main() {
   } = requiredValues;
 
   const redisClient = createClient({ url: process.env.REDIS_URL });
-  redisClient.on('error', err => console.error('[Redis Error]', err));
+  redisClient.on("error", (err) => console.error("[Redis Error]", err));
   await redisClient.connect();
 
   const telegramBot = new TelegramBot(TELEGRAM_TOKEN);
 
   for (const positionId of POSITION_IDS) {
     const data = await getPosition({
-      protocolVersion: 'PROTOCOL_VERSION_V3',
+      protocolVersion: "PROTOCOL_VERSION_V3",
       chainId: Number(CHAIN_ID),
       owner: OWNER_WALLET,
       tokenId: positionId,
@@ -47,7 +53,10 @@ async function main() {
     const lastData = await getPositionCache(redisClient, cacheKey);
     const message = positionMessage({ lastData, data });
 
-    await telegramBot.sendMessage(TELEGRAM_CHAT_ID, message, { parse_mode: "MarkdownV2" });
+    await telegramBot.sendMessage(TELEGRAM_CHAT_ID, message, {
+      parse_mode: "MarkdownV2",
+    });
+
     await setPositionCache(redisClient, cacheKey, data);
 
     console.log(message);

@@ -24,6 +24,9 @@ TELEGRAM_TOKEN=YOUR_BOT_TOKEN
 # Owner wallet address
 OWNER_WALLET=0xYourWalletAddress
 
+# Optional - Range warning threshold (in percentage) [Default: 7.5%]
+RANGE_WARNING_THRESHOLD
+
 # Cache interval key (for multiple interval support)
 INTERVAL=1h
 
